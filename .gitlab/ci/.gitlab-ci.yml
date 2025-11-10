@@ -1,0 +1,16 @@
+stages:
+  - lint
+  - test
+  - build
+
+ruff:
+  stage: lint
+  script: uv run ruff check .
+
+pytest:
+  stage: test
+  script: uv run pytest
+
+build:
+  stage: build
+  script: docker build -t $CI_REGISTRY_IMAGE .
