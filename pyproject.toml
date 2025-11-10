@@ -1,0 +1,22 @@
+[project]
+name = "call-calendar-bot"
+version = "0.1.0"
+description = "Telegram bot for meeting notifications from Yandex Calendar"
+requires-python = ">=3.13"
+authors = ["Kryakzenpuk <a.yakomazov@ylab.t>"]
+readme = "README.md"
+dependencies = [
+    "aiogram>=3.22.0",
+    "python-dotenv>=1.2.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+]
+lint = [
+    "isort>=7.0.0",
+    "pre-commit>=4.3.0",
+    "ruff>=0.14.4",
+]
