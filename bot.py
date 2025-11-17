@@ -2,8 +2,10 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.memory import MemoryStorage
 
-from config import config
+from config.config import config
+from handlers.commands import router as commands_router
 from handlers.meetings import router as meetings_router
 from handlers.start import router as start_router
 
@@ -14,9 +16,11 @@ logging.basicConfig(
 
 async def main():
     bot = Bot(token=config.BOT_TOKEN)
-    dp = Dispatcher()
+    storage = MemoryStorage()
+    dp = Dispatcher(storage=storage)
 
     dp.include_router(start_router)
+    dp.include_router(commands_router)
     dp.include_router(meetings_router)
 
     logging.info("Bot starting...")
