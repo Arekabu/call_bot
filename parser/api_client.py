@@ -1,4 +1,5 @@
 import logging
+from http import HTTPStatus
 from parser.exceptions import BaseServiceException, NetworkError, Server500
 from typing import Any, Dict
 
@@ -36,9 +37,9 @@ class DjangoAPIClient:
                     response_data = await response.json()
                     detail = response_data.get("detail", None)
 
-                    if response.status == 200:
+                    if response.status in (HTTPStatus.OK, HTTPStatus.CREATED):
                         return response_data
-                    elif response.status >= 500:
+                    elif response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
                         raise Server500(detail)
                     else:
                         raise BaseServiceException(detail)
@@ -47,7 +48,12 @@ class DjangoAPIClient:
             logger.error(f"Network error: {e}")
             raise NetworkError(f"Network error: {str(e)}")
 
-    async def register_user(self, email: str, telegram_id: str) -> Dict[str, Any]:
-        """Регистрация пользователя"""
+    async def send_email(self, email: str, telegram_id: str) -> Dict[str, Any]:
+        """Регистрация пользователя. Отправка email на сервер."""
         data = {"email": email}
         return await self._make_request("POST", "users/email", data, telegram_id)
+
+    async def send_code(self, code: str, telegram_id: str) -> Dict[str, Any]:
+        """Регистрация пользователя. Отправка code на сервер."""
+        data = {"code": code}
+        return await self._make_request("POST", "users/code", data, telegram_id)
