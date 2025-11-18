@@ -12,10 +12,12 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
 # Копируем модули
+COPY config/ ./config/
 COPY handlers/ ./handlers/
 COPY keyboards/ ./keyboards/
 COPY parser/ ./parser/
-COPY bot.py config.py ./
+COPY services/ ./services/
+COPY bot.py .env ./
 
 # Настраиваем окружене
 ENV PATH="/app/.venv/bin:$PATH"

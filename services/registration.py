@@ -1,5 +1,5 @@
 from parser.api_client import DjangoAPIClient
-from parser.exceptions import BaseServiceException
+from parser.exceptions import BaseServiceException, Server500
 
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
@@ -23,10 +23,11 @@ class RegistrationService:
 
         try:
             # Отправляем запрос на сервер
-            await self.api_client.register_user(email, telegram_id)
+            await self.api_client.send_email(email, telegram_id)
 
-            # Сохраняем email в состоянии
+            # Сохраняем email и telegram_id в состоянии
             await state.update_data(email=email)
+            await state.update_data(telegram_id=telegram_id)
 
             # Переходим к ожиданию кода
             await message.answer(f"Введите код, отправленный на email: {email}")
@@ -38,13 +39,34 @@ class RegistrationService:
             await state.clear()
 
     async def process_code(self, message: Message, state: FSMContext) -> None:
-        """Обработка введенного кода (заглушка)"""
+        """Отправка введенного кода на сервер"""
         code = message.text.strip()
-        user_data = await state.get_data()
-        email = user_data.get("email", "неизвестный email")
 
-        # Здесь будет логика проверки кода
-        await message.answer(
-            f"Код {code} для email {email} принят. " f"Дальше будет что-то ещё..."
-        )
-        await state.clear()
+        user_data = await state.get_data()
+        email = user_data.get("email", "")
+        telegram_id = user_data.get("telegram_id", "")
+
+        # Проверка данных в state
+        if not email or not telegram_id:
+            await message.answer("Данные сессии утеряны. Начните регистрацию заново.")
+            await state.clear()
+            return
+
+        # Отправляем запрос на сервер
+        try:
+            response_data = await self.api_client.send_code(code, telegram_id)
+
+            await message.answer(
+                response_data.get(
+                    "confirm", f"✅ Регистрация для {email} завершена успешно!"
+                )
+            )
+            await state.clear()
+
+        except Server500 as e:
+            await message.answer(e.send)
+            await state.clear()
+
+        # Для других ошибок оставляем state для возможности повторного ввода кода
+        except BaseServiceException as e:
+            await message.answer(e.send)
