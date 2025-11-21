@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class DjangoAPIClient:
-    def __init__(self):
+    def __init__(self) -> None:
         self.base_url = config.DJANGO_API_URL
         self.timeout = aiohttp.ClientTimeout(total=30)
 
@@ -27,7 +27,7 @@ class DjangoAPIClient:
         headers = {}
 
         if telegram_id:
-            headers["telegram_id"] = telegram_id
+            headers["Telegram-Id"] = telegram_id
 
         try:
             async with aiohttp.ClientSession(
@@ -57,3 +57,7 @@ class DjangoAPIClient:
         """Регистрация пользователя. Отправка code на сервер."""
         data = {"code": code}
         return await self._make_request("POST", "users/code", data, telegram_id)
+
+    async def get_meetings(self, telegram_id: str) -> Dict[str, Any]:
+        """Запрос созвонов. Запросить созвоны пользователя."""
+        return await self._make_request("GET", "meetings", telegram_id=telegram_id)
