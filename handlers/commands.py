@@ -24,5 +24,5 @@ async def process_email(message: Message, state: FSMContext):
 
 @router.message(RegistrationStates.waiting_for_code)
 async def process_code(message: Message, state: FSMContext):
-    """Обработка введенного кода (заглушка)"""
+    """Обработка введенного кода"""
     await registration_service.process_code(message, state)

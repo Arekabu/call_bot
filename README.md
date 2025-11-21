@@ -30,6 +30,14 @@
    bash setup.sh
    ```
 
+**ИЛИ просто последовательно вводим команды:**
+   ```bash
+   uv sync --all-groups
+   uv run pre-commit install
+   uv run pre-commit run --all-files
+   ```
+
+
 ### 4. Копируем и заполняем своими данными переменную окружения из шаблона
 
    ```bash
