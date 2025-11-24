@@ -8,7 +8,7 @@ from config.states import RegistrationStates
 
 
 class RegistrationService:
-    def __init__(self):
+    def __init__(self) -> None:
         self.api_client = DjangoAPIClient()
 
     async def start_registration(self, message: Message, state: FSMContext) -> None:

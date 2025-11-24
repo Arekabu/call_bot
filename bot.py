@@ -14,7 +14,7 @@ logging.basicConfig(
 )
 
 
-async def main():
+async def main() -> None:
     bot = Bot(token=config.BOT_TOKEN)
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)

@@ -1,5 +1,5 @@
 from aiogram import F, Router
-from aiogram.types import Message
+from aiogram.types import CallbackQuery
 
 from services.meetings import MeetingsService
 
@@ -7,7 +7,8 @@ router = Router()
 meetings_service = MeetingsService()
 
 
-@router.message(F.text == "📅 Мои созвоны")
-async def meetings_button(message: Message):
+@router.callback_query(F.data == "my_calls")
+async def meetings_button(callback: CallbackQuery):
     """Обработка нажатия кнопки Мои созвоны"""
-    await meetings_service.get_meetings(message)
+    await callback.answer()
+    await meetings_service.get_meetings(callback.message)
