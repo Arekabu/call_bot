@@ -2,10 +2,10 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_async_works():
+async def test_async_works() -> None:
     """Проверяем что async работает"""
 
-    async def dummy():
+    async def dummy() -> str:
         return "ok"
 
     result = await dummy()
