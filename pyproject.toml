@@ -13,6 +13,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=8.4.2",
+    "pytest-aiohttp>=1.1.0",
     "pytest-asyncio>=1.2.0",
 ]
 lint = [
@@ -21,9 +22,13 @@ lint = [
     "ruff>=0.14.4",
 ]
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
 [tool.ruff.lint]
 extend-select = ["I", "N", "UP", "ANN"]
 ignore = ["ANN101", "N818"]
 
 [tool.ruff.lint.per-file-ignores]
 "handlers/*.py" = ["ANN201", "ANN202"]
+"tests/*.py" = ["ANN001", "ANN101", "ANN102", "ANN201", "ANN202"]

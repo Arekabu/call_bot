@@ -1,4 +1,3 @@
-from datetime import datetime
 from parser.api_client import DjangoAPIClient
 from parser.exceptions import BaseServiceException
 
@@ -38,13 +37,8 @@ class MeetingsService:
         text = "📅 *Ваши созвоны на сегодня:*\n\n"
 
         for i, meeting in enumerate(meetings, 1):
-            date_from = datetime.fromisoformat(meeting["date_from"]).strftime("%H:%M")
-            date_till = datetime.fromisoformat(meeting["date_till"]).strftime("%H:%M")
-
-            time_range = f"{date_from}  -  {date_till}"
-
             text += f"*{i}. {meeting['title']}*\n"
-            text += f"   🕐 {time_range}\n"
+            text += f"   🕐 {meeting['meeting_time']}\n"
             text += f"   🔗 [Ссылка]({meeting['url']})\n\n"
 
         return text
