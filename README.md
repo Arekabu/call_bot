@@ -6,7 +6,6 @@
 
    ```bash
    git clone git@git.yiilab.com:ylab-internal/call-calendar/call-calendar-bot.git
-   cd call-calendar-bot
    ```
 
 ### 2. Устанавливаем uv
