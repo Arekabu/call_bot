@@ -20,7 +20,7 @@ async def mock_meetings_handler(request):
 async def meetings_api(aiohttp_server):
     """Фикстура тестового API клиента для meetings"""
     app = web.Application()
-    app.router.add_get("/api/meetings", mock_meetings_handler)
+    app.router.add_get("/api/meetings/", mock_meetings_handler)
     server = await aiohttp_server(app)
     return server
 
@@ -28,6 +28,6 @@ async def meetings_api(aiohttp_server):
 @pytest.fixture
 async def meetings_service():
     """Фикстура для MeetingsService"""
-    from services.meetings import MeetingsService
+    from services import MeetingsService
 
     return MeetingsService()

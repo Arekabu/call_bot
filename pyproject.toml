@@ -27,7 +27,7 @@ asyncio_mode = "auto"
 
 [tool.ruff.lint]
 extend-select = ["I", "N", "UP", "ANN"]
-ignore = ["ANN101", "N818"]
+ignore = ["ANN101", "N818", "ANN401"]
 
 [tool.ruff.lint.per-file-ignores]
 "handlers/*.py" = ["ANN201", "ANN202"]

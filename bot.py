@@ -4,7 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from config.config import config
+from config import config
 from handlers.commands import router as commands_router
 from handlers.meetings import router as meetings_router
 from handlers.start import router as start_router
