@@ -5,7 +5,7 @@ from typing import Any, Dict
 
 import aiohttp
 
-from config.config import config
+from config import config
 
 logger = logging.getLogger(__name__)
 

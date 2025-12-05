@@ -19,6 +19,15 @@ def mock_message():
 
 
 @pytest.fixture
+def mock_callback():
+    """Фикстура для коллбэка"""
+    callback = AsyncMock()
+    callback.from_user.id = 123456
+    callback.message.answer = AsyncMock()
+    return callback
+
+
+@pytest.fixture
 async def test_server_factory(aiohttp_server):
     """Фабрика возвращает настроенный клиент"""
 

@@ -1,31 +1,30 @@
-from parser.api_client import DjangoAPIClient
 from parser.exceptions import BaseServiceException
+from typing import final
 
-from aiogram.types import Message
+from aiogram.types import CallbackQuery
+
+from services.base import BaseService
 
 
-class MeetingsService:
-    def __init__(self) -> None:
-        self.api_client = DjangoAPIClient()
+@final
+class MeetingsService(BaseService):
+    async def _get_telegram_id(self, callback: CallbackQuery) -> str:
+        return str(callback.from_user.id)
 
-    async def get_meetings(self, message: Message) -> None:
-        """Запрос созвонов пользователя"""
-        telegram_id = str(message.from_user.id)
-
+    async def _call_api(self, telegram_id: str, callback: CallbackQuery) -> None:
         try:
             # Отправляем запрос на сервер
-            response_data = await self.api_client.get_meetings(telegram_id)
+            response_data = await self.api.get_meetings(telegram_id)
 
             # Форматируем ответ
             formatted_text = await self._format_meetings_response(response_data)
 
-            await message.answer(
+            await callback.message.answer(
                 formatted_text, parse_mode="Markdown", disable_web_page_preview=True
             )
-
         except BaseServiceException as e:
             # Отправляем полный текст ошибки от сервера
-            await message.answer(e.send)
+            await callback.message.answer(e.send)
 
     async def _format_meetings_response(self, response_data: dict) -> str:
         """Форматируем ответа сервера для отправки пользователю"""
