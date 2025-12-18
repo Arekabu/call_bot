@@ -38,7 +38,7 @@ async def test_make_request_500(test_server_factory):
     with pytest.raises(Server500) as exc_info:
         await client_default._make_request("GET", "test")
 
-    assert exc_info.value.send == "Внутренняя ошибка сервера. Попробуйте позже."
+    assert exc_info.value.send == "🔥 Внутренняя ошибка сервера. Попробуйте позже."
 
     with pytest.raises(Server500) as exc_info:
         await client_detail._make_request("GET", "test")
@@ -61,7 +61,7 @@ async def test_make_request_400(test_server_factory):
     with pytest.raises(BaseServiceException) as exc_info:
         await client_default._make_request("GET", "test")
 
-    assert exc_info.value.send == "Произошла ошибка. Попробуйте еще раз."
+    assert exc_info.value.send == "❌ Произошла ошибка. Попробуйте еще раз."
 
     with pytest.raises(BaseServiceException) as exc_info:
         await client_detail._make_request("GET", "test")

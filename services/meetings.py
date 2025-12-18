@@ -1,6 +1,7 @@
-from parser.exceptions import BaseServiceException
+from parser.exceptions import BaseServiceException, TelegramFormatError
 from typing import final
 
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import CallbackQuery
 
 from services.base import BaseService
@@ -19,9 +20,13 @@ class MeetingsService(BaseService):
             # Форматируем ответ
             formatted_text = await self._format_meetings_response(response_data)
 
-            await callback.message.answer(
-                formatted_text, parse_mode="Markdown", disable_web_page_preview=True
-            )
+            try:
+                await callback.message.answer(
+                    formatted_text, parse_mode="HTML", disable_web_page_preview=True
+                )
+            except TelegramBadRequest:
+                raise TelegramFormatError
+
         except BaseServiceException as e:
             # Отправляем полный текст ошибки от сервера
             await callback.message.answer(e.send)
@@ -33,11 +38,21 @@ class MeetingsService(BaseService):
         if not meetings:
             return "📭 На сегодня созвонов нет"
 
-        text = "📅 *Ваши созвоны на сегодня:*\n\n"
+        text = "📅 <b>Ваши созвоны на сегодня:</b>\n\n"
 
         for i, meeting in enumerate(meetings, 1):
-            text += f"*{i}. {meeting['title']}*\n"
+            title = (
+                meeting["title"]
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace('"', "&quot;")
+            )
+
+            url = meeting["url"].strip().rstrip('\\"')
+
+            text += f"<b>{i}. {title}</b>\n"
             text += f"   🕐 {meeting['meeting_time']}\n"
-            text += f"   🔗 [Ссылка]({meeting['url']})\n\n"
+            text += f"   🔗 <a href='{url}'>Ссылка</a>\n\n"
 
         return text
