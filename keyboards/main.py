@@ -38,3 +38,16 @@ def get_main_inline_keyboard() -> InlineKeyboardMarkup:
             ],
         ]
     )
+
+
+def get_calls_inline_keyboard() -> InlineKeyboardMarkup:
+    """inline-клавиатура с кнопкой Мои созвоны"""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="📅 Мои созвоны", callback_data=MainKeyboardCallback.MY_CALLS
+                )
+            ],
+        ]
+    )
