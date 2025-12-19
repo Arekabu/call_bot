@@ -4,6 +4,7 @@ from typing import final
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import CallbackQuery
 
+from keyboards.main import get_calls_inline_keyboard
 from services.base import BaseService
 
 
@@ -22,7 +23,10 @@ class MeetingsService(BaseService):
 
             try:
                 await callback.message.answer(
-                    formatted_text, parse_mode="HTML", disable_web_page_preview=True
+                    formatted_text,
+                    parse_mode="HTML",
+                    disable_web_page_preview=True,
+                    reply_markup=get_calls_inline_keyboard(),
                 )
             except TelegramBadRequest:
                 raise TelegramFormatError
@@ -49,10 +53,15 @@ class MeetingsService(BaseService):
                 .replace('"', "&quot;")
             )
 
-            url = meeting["url"].strip().rstrip('\\"')
+            url = meeting["url"]
 
             text += f"<b>{i}. {title}</b>\n"
             text += f"   🕐 {meeting['meeting_time']}\n"
-            text += f"   🔗 <a href='{url}'>Ссылка</a>\n\n"
+
+            if url:
+                url = meeting["url"].strip().rstrip('\\"')
+                text += f"   🔗 <a href='{url}'>Ссылка</a>\n\n"
+            else:
+                text += "   🔗 Ссылка не предоставлена.\n\n"
 
         return text
