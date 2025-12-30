@@ -1,6 +1,5 @@
 # 📅 Call Calendar Bot – Telegram Bot for API Communication
-Telegram бот для интеграции с системой управления звонками через REST API с поддержкой современных асинхронных паттернов.
-<br>
+## Telegram бот для интеграции с системой управления звонками через REST API с поддержкой современных асинхронных паттернов.
 <br>
 ## 🚀 Технологический стек
 
@@ -26,7 +25,7 @@ Telegram бот для интеграции с системой управлен
   <img src="https://img.shields.io/badge/REST%20API-Integration-FF6B6B?style=for-the-badge&logo=rest&logoColor=white" alt="REST API">
   <img src="https://img.shields.io/badge/.env-Configuration-ECD53F?style=for-the-badge&logo=dotenv&logoColor=black" alt="Environment Variables">
 </p>
-
+<br>
 ## 📦 Установка проекта
 
 ### 1. Клонируем репозиторий
