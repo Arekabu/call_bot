@@ -52,5 +52,7 @@
    ```bash
    docker build -t call-calendar-bot . && docker run --name call-calendar-bot-container call-calendar-bot
    ```
-#### *При локальном запуске через Docker необходимо в .env файле (или специальных переменных для Docker) изменить:*
-#### DJANGO_API_URL=http://host.docker.internal:8000/api
+Для локального запуска в Docker измените в .env:
+   ```env
+   DJANGO_API_URL=http://host.docker.internal:8000/api
+   ```
