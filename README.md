@@ -16,6 +16,29 @@ Telegram бот для интеграции с системой управлен
   <img src="https://img.shields.io/badge/asyncio-✔-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="AsyncIO">
 </p>
 
+### **Development & Quality**
+<p align="left">
+  <img src="https://img.shields.io/badge/uv-Build%20Tool-FFD43B?style=for-the-badge&logo=python&logoColor=blue" alt="uv">
+  <img src="https://img.shields.io/badge/pytest-Testing-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white" alt="pytest">
+  <img src="https://img.shields.io/badge/Ruff-Linting-FF6B6B?style=for-the-badge&logo=ruff&logoColor=white" alt="Ruff">
+  <img src="https://img.shields.io/badge/isort-Import%20Sorting-EFEFEF?style=for-the-badge&logo=python&logoColor=blue" alt="isort">
+  <img src="https://img.shields.io/badge/pre--commit-Hooks-FAB040?style=for-the-badge&logo=git&logoColor=white" alt="pre-commit">
+</p>
+
+### **Architecture & Design Patterns**
+<p align="left">
+  <img src="https://img.shields.io/badge/Шаблонный%20Метод-Pattern-4A90E2?style=for-the-badge" alt="Template Method Pattern">
+  <img src="https://img.shields.io/badge/MVC-Architecture-FF6B6B?style=for-the-badge" alt="MVC Architecture">
+  <img src="https://img.shields.io/badge/DI-Dependency%20Injection-34D058?style=for-the-badge" alt="Dependency Injection">
+</p>
+
+### **Infrastructure**
+<p align="left">
+  <img src="https://img.shields.io/badge/Docker-Container-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/REST%20API-Integration-FF6B6B?style=for-the-badge&logo=rest&logoColor=white" alt="REST API">
+  <img src="https://img.shields.io/badge/.env-Configuration-ECD53F?style=for-the-badge&logo=dotenv&logoColor=black" alt="Environment Variables">
+</p>
+
 ## 📦 Установка проекта
 
 ### 1. Клонируем репозиторий
