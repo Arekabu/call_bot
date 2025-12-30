@@ -1,4 +1,11 @@
-# Call Calendar Bot
+# 📅 Call Calendar Bot – Telegram Bot for API Communication
+
+[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
+[![aiogram](https://img.shields.io/badge/aiogram-3.22+-green.svg)](https://docs.aiogram.dev/)
+[![uv](https://img.shields.io/badge/packaging-uv-orange.svg)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/badge/linter-Ruff-red.svg)](https://github.com/astral-sh/ruff)
+
+Telegram бот для интеграции с системой управления звонками через REST API с поддержкой современных асинхронных паттернов.
 
 ## 📦 Установка проекта
 
