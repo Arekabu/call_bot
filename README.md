@@ -7,6 +7,15 @@
 
 Telegram бот для интеграции с системой управления звонками через REST API с поддержкой современных асинхронных паттернов.
 
+## 🚀 Технологический стек
+
+### **Backend & Framework**
+<p align="left">
+  <img src="https://img.shields.io/badge/Python-3.13+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.13+">
+  <img src="https://img.shields.io/badge/aiogram-3.22-000000?style=for-the-badge&logo=telegram&logoColor=white" alt="aiogram">
+  <img src="https://img.shields.io/badge/asyncio-✔-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="AsyncIO">
+</p>
+
 ## 📦 Установка проекта
 
 ### 1. Клонируем репозиторий
