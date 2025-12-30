@@ -25,13 +25,6 @@ Telegram бот для интеграции с системой управлен
   <img src="https://img.shields.io/badge/pre--commit-Hooks-FAB040?style=for-the-badge&logo=git&logoColor=white" alt="pre-commit">
 </p>
 
-### **Architecture & Design Patterns**
-<p align="left">
-  <img src="https://img.shields.io/badge/Шаблонный%20Метод-Pattern-4A90E2?style=for-the-badge" alt="Template Method Pattern">
-  <img src="https://img.shields.io/badge/MVC-Architecture-FF6B6B?style=for-the-badge" alt="MVC Architecture">
-  <img src="https://img.shields.io/badge/DI-Dependency%20Injection-34D058?style=for-the-badge" alt="Dependency Injection">
-</p>
-
 ### **Infrastructure**
 <p align="left">
   <img src="https://img.shields.io/badge/Docker-Container-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
