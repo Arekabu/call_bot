@@ -1,10 +1,10 @@
-from parser.exceptions import BaseServiceException, Server500
 from typing import final
 
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from config import RegistrationStates
+from exceptions import BaseServiceException, Server500
 from services.base import BaseService
 
 

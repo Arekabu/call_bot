@@ -1,9 +1,9 @@
-from parser.exceptions import BaseServiceException, TelegramFormatError
 from typing import final
 
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import CallbackQuery
 
+from exceptions import BaseServiceException, TelegramFormatError
 from keyboards.main import get_calls_inline_keyboard
 from services.base import BaseService
 
