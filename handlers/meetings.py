@@ -11,4 +11,4 @@ meetings_service = MeetingsService()
 async def meetings_button(callback: CallbackQuery):
     """Обработка нажатия кнопки Мои созвоны"""
     await callback.answer()
-    await meetings_service.execute(callback)
+    await meetings_service(callback)

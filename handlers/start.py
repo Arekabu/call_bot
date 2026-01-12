@@ -58,4 +58,4 @@ async def help_button(callback: CallbackQuery):
 async def register_button(callback: CallbackQuery, state: FSMContext):
     """Обработка нажатия кнопки регистрации"""
     await callback.answer()
-    await registration_start_service.execute(callback.message, state)
+    await registration_start_service(callback.message, state)

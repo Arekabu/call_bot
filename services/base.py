@@ -8,7 +8,7 @@ class BaseService(ABC):
         self.api = DjangoAPIClient()
 
     @final
-    async def execute(self, *args: Any, **kwargs: Any) -> None:
+    async def __call__(self, *args: Any, **kwargs: Any) -> None:
         telegram_id = await self._get_telegram_id(*args, **kwargs)
         await self._call_api(telegram_id, *args, **kwargs)
 
