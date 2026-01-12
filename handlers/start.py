@@ -3,7 +3,7 @@ from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from keyboards.main import get_main_inline_keyboard
+from keyboards import MainKeyboardCallback, get_main_inline_keyboard
 from services import RegistrationStartService
 
 router = Router()
@@ -47,14 +47,14 @@ async def cmd_help(message: Message):
     await message.answer(help_text, parse_mode="Markdown")
 
 
-@router.callback_query(F.data == "help")
+@router.callback_query(F.data == MainKeyboardCallback.HELP)
 async def help_button(callback: CallbackQuery):
     """Обработка нажатия кнопки Помощь"""
     await callback.answer()
     await cmd_help(callback.message)
 
 
-@router.callback_query(F.data == "register")
+@router.callback_query(F.data == MainKeyboardCallback.REGISTER)
 async def register_button(callback: CallbackQuery, state: FSMContext):
     """Обработка нажатия кнопки регистрации"""
     await callback.answer()

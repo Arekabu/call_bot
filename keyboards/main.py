@@ -5,7 +5,7 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
 )
 
-from keyboards.callback_data import MainKeyboardCallback
+from keyboards import MainKeyboardCallback
 
 
 def get_main_keyboard() -> ReplyKeyboardMarkup:
