@@ -1,10 +1,10 @@
-from parser.exceptions import BaseServiceException, Server500
-from typing import final
+from typing import Any, final
 
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from config import RegistrationStates
+from exceptions import BaseServiceException, Server500
 from services.base import BaseService
 
 
@@ -12,12 +12,13 @@ from services.base import BaseService
 class RegistrationStartService(BaseService):
     """Сервис начала регистрации"""
 
-    async def _get_telegram_id(self, message: Message, state: FSMContext) -> str:
+    async def _get_telegram_id(self, **kwargs: Any) -> str:
+        message: Message = kwargs["message"]
         return str(message.from_user.id)
 
-    async def _call_api(
-        self, telegram_id: str, message: Message, state: FSMContext
-    ) -> None:
+    async def _call_api(self, telegram_id: str, **kwargs: Any) -> None:
+        message: Message = kwargs["message"]
+        state: FSMContext = kwargs["state"]
         await message.answer("Введите адрес электронной почты пользователя.")
         await state.set_state(RegistrationStates.waiting_for_email)
 
@@ -26,13 +27,14 @@ class RegistrationStartService(BaseService):
 class RegistrationEmailService(BaseService):
     """Сервис отправки email"""
 
-    async def _get_telegram_id(self, message: Message, state: FSMContext) -> str:
+    async def _get_telegram_id(self, **kwargs: Any) -> str:
+        message: Message = kwargs["message"]
         return str(message.from_user.id)
 
-    async def _call_api(
-        self, telegram_id: str, message: Message, state: FSMContext
-    ) -> None:
+    async def _call_api(self, telegram_id: str, **kwargs: Any) -> None:
         """Отправка введённого email на сервер"""
+        message: Message = kwargs["message"]
+        state: FSMContext = kwargs["state"]
         email = message.text.strip()
         telegram_id = str(message.from_user.id)
 
@@ -58,13 +60,15 @@ class RegistrationEmailService(BaseService):
 class RegistrationCodeService(BaseService):
     """Сервис отправки кода"""
 
-    async def _get_telegram_id(self, message: Message, state: FSMContext) -> str:
+    async def _get_telegram_id(self, **kwargs: Any) -> str:
+        message: Message = kwargs["message"]
         return str(message.from_user.id)
 
-    async def _call_api(
-        self, telegram_id: str, message: Message, state: FSMContext
-    ) -> None:
+    async def _call_api(self, telegram_id: str, **kwargs: Any) -> None:
         """Отправка введенного кода на сервер"""
+
+        message: Message = kwargs["message"]
+        state: FSMContext = kwargs["state"]
         code = message.text.strip()
 
         user_data = await state.get_data()

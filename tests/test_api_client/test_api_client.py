@@ -1,7 +1,7 @@
-from parser.exceptions import BaseServiceException, NetworkError, Server500
-
 import pytest
 from aiohttp import web
+
+from exceptions import BaseServiceException, NetworkError, Server500
 
 
 async def test_make_request_success(test_server_factory):

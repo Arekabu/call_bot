@@ -5,7 +5,7 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
 )
 
-from keyboards.callback_data import MainKeyboardCallback
+from keyboards import MainKeyboardCallback
 
 
 def get_main_keyboard() -> ReplyKeyboardMarkup:
@@ -46,7 +46,7 @@ def get_calls_inline_keyboard() -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="📅 Мои созвоны", callback_data=MainKeyboardCallback.MY_CALLS
+                    text="📅 Обновить", callback_data=MainKeyboardCallback.MY_CALLS
                 )
             ],
         ]

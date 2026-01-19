@@ -6,7 +6,7 @@ async def test_get_meetings_success(meetings_api, mock_callback, meetings_servic
     )
 
     # Вызываем метод
-    await meetings_service.execute(mock_callback)
+    await meetings_service(callback=mock_callback)
 
     # Проверяем поля в ответе
     mock_callback.message.answer.assert_called_once()
