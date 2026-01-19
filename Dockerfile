@@ -13,6 +13,7 @@ RUN uv sync --frozen --no-dev
 
 # Копируем модули
 COPY config/ ./config/
+COPY exceptions/ ./exceptions/
 COPY handlers/ ./handlers/
 COPY keyboards/ ./keyboards/
 COPY parser/ ./parser/
