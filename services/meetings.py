@@ -1,19 +1,22 @@
-from parser.exceptions import BaseServiceException, TelegramFormatError
-from typing import final
+from typing import Any, final
 
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import CallbackQuery
 
-from keyboards.main import get_calls_inline_keyboard
+from exceptions import BaseServiceException, TelegramFormatError
+from keyboards import get_calls_inline_keyboard
 from services.base import BaseService
 
 
 @final
 class MeetingsService(BaseService):
-    async def _get_telegram_id(self, callback: CallbackQuery) -> str:
+    async def _get_telegram_id(self, **kwargs: Any) -> str:
+        callback: CallbackQuery = kwargs["callback"]
         return str(callback.from_user.id)
 
-    async def _call_api(self, telegram_id: str, callback: CallbackQuery) -> None:
+    async def _call_api(self, telegram_id: str, **kwargs: Any) -> None:
+        callback: CallbackQuery = kwargs["callback"]
+
         try:
             # Отправляем запрос на сервер
             response_data = await self.api.get_meetings(telegram_id)

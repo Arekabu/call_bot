@@ -1,11 +1,11 @@
 import logging
 from http import HTTPStatus
-from parser.exceptions import BaseServiceException, NetworkError, Server500
 from typing import Any, Dict
 
 import aiohttp
 
 from config import config
+from exceptions import BaseServiceException, NetworkError, Server500
 
 logger = logging.getLogger(__name__)
 
