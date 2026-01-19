@@ -16,10 +16,13 @@ class MeetingsService(BaseService):
 
     async def _call_api(self, telegram_id: str, **kwargs: Any) -> None:
         callback: CallbackQuery = kwargs["callback"]
+        chat_id = str(callback.message.chat.id)
 
         try:
             # Отправляем запрос на сервер
-            response_data = await self.api.get_meetings(telegram_id)
+            response_data = await self.api.get_meetings(
+                chat_id=chat_id, telegram_id=telegram_id
+            )
 
             # Форматируем ответ
             formatted_text = await self._format_meetings_response(response_data)
