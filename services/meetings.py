@@ -1,10 +1,13 @@
+import re
 from typing import Any, final
 
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
 
-from exceptions import BaseServiceException, TelegramFormatError
-from keyboards import get_calls_inline_keyboard
+from config import MeetingsUpdateTimeStates, TimeUpdateDTO
+from exceptions import BaseServiceException, Server500, TelegramFormatError
+from keyboards import get_calls_inline_keyboard, get_calls_inline_keyboard_group
 from services.base import BaseService
 
 
@@ -17,6 +20,11 @@ class MeetingsService(BaseService):
     async def _call_api(self, telegram_id: str, **kwargs: Any) -> None:
         callback: CallbackQuery = kwargs["callback"]
         chat_id = str(callback.message.chat.id)
+
+        if chat_id == telegram_id:
+            keyboard = get_calls_inline_keyboard()
+        else:
+            keyboard = get_calls_inline_keyboard_group()
 
         try:
             # Отправляем запрос на сервер
@@ -32,7 +40,7 @@ class MeetingsService(BaseService):
                     formatted_text,
                     parse_mode="HTML",
                     disable_web_page_preview=True,
-                    reply_markup=get_calls_inline_keyboard(),
+                    reply_markup=keyboard,
                 )
             except TelegramBadRequest:
                 raise TelegramFormatError
@@ -124,3 +132,62 @@ class MeetingsService(BaseService):
             .replace(">", "&gt;")
             .replace('"', "&quot;")
         )
+
+
+@final
+class MeetingsUpdateTimeStartService(BaseService):
+    async def _get_telegram_id(
+        self, *, callback: CallbackQuery, state: FSMContext
+    ) -> str:
+        # callback: CallbackQuery = kwargs["callback"]
+        return str(callback.from_user.id)
+
+    async def _call_api(
+        self, *, telegram_id: str, callback: CallbackQuery, state: FSMContext
+    ) -> None:
+        await callback.message.answer(
+            "Введите желаемое время обновления в формате 00:00"
+        )
+        await state.set_state(MeetingsUpdateTimeStates.waiting_for_time)
+
+
+@final
+class MeetingsUpdateTimeSendTimeService(BaseService):
+    async def _get_telegram_id(self, *, message: Message, state: FSMContext) -> str:
+        return str(message.from_user.id)
+
+    async def _call_api(
+        self, *, telegram_id: str, message: Message, state: FSMContext
+    ) -> None:
+        """Отправка введённого time на сервер"""
+        time = message.text.strip()
+        chat_id = str(message.chat.id)
+
+        if not await self._time_is_valid(time):
+            await message.answer("Введите время в формате 00:00")
+            return None
+
+        time_data = TimeUpdateDTO(time=time, chat_id=chat_id, telegram_id=telegram_id)
+
+        try:
+            # Отправляем запрос на сервер
+            response_data = await self.api.send_time(time_data=time_data)
+
+            await message.answer(
+                response_data.get(
+                    "confirm", f"✅ Созвоны будут обновляться по будням в 🕐{time} "
+                )
+            )
+            await state.clear()
+
+        except Server500 as e:
+            await message.answer(e.send)
+            await state.clear()
+
+            # Для других ошибок оставляем state для возможности повторного ввода
+        except BaseServiceException as e:
+            await message.answer(e.send)
+
+    async def _time_is_valid(self, time: str) -> bool:
+        pattern = re.compile(r"^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$")
+        return bool(re.match(pattern, time))
