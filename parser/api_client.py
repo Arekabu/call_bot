@@ -5,6 +5,7 @@ from typing import Any, Dict
 import aiohttp
 
 from config import config
+from config.dto import TimeUpdateDTO
 from exceptions import BaseServiceException, NetworkError, Server500
 
 logger = logging.getLogger(__name__)
@@ -63,4 +64,11 @@ class DjangoAPIClient:
         data = {"chat_id": chat_id}
         return await self._make_request(
             "GET", "meetings/", data, telegram_id=telegram_id
+        )
+
+    async def send_time(self, *, time_data: TimeUpdateDTO) -> Dict[str, Any]:
+        """Отправка времени обновления данных о созвонах"""
+        data = {"time": time_data.time, "chat_id": time_data.chat_id}
+        return await self._make_request(
+            "POST", "users/set_time/", data, telegram_id=time_data.telegram_id
         )

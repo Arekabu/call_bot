@@ -1,4 +1,8 @@
-from services.meetings import MeetingsService
+from services.meetings import (
+    MeetingsService,
+    MeetingsUpdateTimeSendTimeService,
+    MeetingsUpdateTimeStartService,
+)
 from services.registration import (
     RegistrationCodeService,
     RegistrationEmailService,
@@ -10,4 +14,6 @@ __all__ = [
     "RegistrationCodeService",
     "RegistrationEmailService",
     "RegistrationStartService",
+    "MeetingsUpdateTimeStartService",
+    "MeetingsUpdateTimeSendTimeService",
 ]

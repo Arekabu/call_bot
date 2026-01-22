@@ -36,7 +36,6 @@ class RegistrationEmailService(BaseService):
         message: Message = kwargs["message"]
         state: FSMContext = kwargs["state"]
         email = message.text.strip()
-        telegram_id = str(message.from_user.id)
 
         try:
             # Отправляем запрос на сервер
