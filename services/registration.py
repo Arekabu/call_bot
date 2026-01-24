@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from config import RegistrationStates
+from config.dto import RegistrationCodeDTO, RegistrationEmailDTO
 from exceptions import BaseServiceException, Server500
 from services.base import BaseService
 
@@ -35,9 +36,11 @@ class RegistrationEmailService(BaseService):
         """Отправка введённого email на сервер"""
         email = message.text.strip()
 
+        email_data = RegistrationEmailDTO(email=email, telegram_id=telegram_id)
+
         try:
             # Отправляем запрос на сервер
-            await self.api.send_email(email=email, telegram_id=telegram_id)
+            await self.api.send_email(email_data)
 
             # Сохраняем email и telegram_id в состоянии
             await state.update_data(email=email)
@@ -76,9 +79,11 @@ class RegistrationCodeService(BaseService):
             await state.clear()
             return
 
+        code_data = RegistrationCodeDTO(code=code, telegram_id=telegram_id)
+
         # Отправляем запрос на сервер
         try:
-            response_data = await self.api.send_code(code=code, telegram_id=telegram_id)
+            response_data = await self.api.send_code(code_data)
 
             await message.answer(
                 response_data.get(

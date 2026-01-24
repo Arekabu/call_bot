@@ -5,7 +5,7 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from config import MeetingsUpdateTimeStates, TimeUpdateDTO
+from config import MeetingsDTO, MeetingsUpdateTimeStates, UpdateTimeDTO
 from exceptions import BaseServiceException, Server500, TelegramFormatError
 from keyboards import get_calls_inline_keyboard, get_calls_inline_keyboard_group
 from services.base import BaseService
@@ -24,11 +24,11 @@ class MeetingsService(BaseService):
         else:
             keyboard = get_calls_inline_keyboard_group()
 
+        meetings_data = MeetingsDTO(chat_id=chat_id, telegram_id=telegram_id)
+
         try:
             # Отправляем запрос на сервер
-            response_data = await self.api.get_meetings(
-                chat_id=chat_id, telegram_id=telegram_id
-            )
+            response_data = await self.api.get_meetings(meetings_data)
 
             # Форматируем ответ
             formatted_text = await self._format_meetings_response(response_data)
@@ -162,7 +162,7 @@ class MeetingsUpdateTimeSendTimeService(BaseService):
             await message.answer("Введите время в формате 00:00")
             return None
 
-        time_data = TimeUpdateDTO(time=time, chat_id=chat_id, telegram_id=telegram_id)
+        time_data = UpdateTimeDTO(time=time, chat_id=chat_id, telegram_id=telegram_id)
 
         try:
             # Отправляем запрос на сервер
