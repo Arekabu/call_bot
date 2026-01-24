@@ -49,12 +49,12 @@ class DjangoAPIClient:
             logger.error(f"Network error: {e}")
             raise NetworkError(f"Network error: {str(e)}")
 
-    async def send_email(self, email: str, telegram_id: str) -> Dict[str, Any]:
+    async def send_email(self, *, email: str, telegram_id: str) -> Dict[str, Any]:
         """Регистрация пользователя. Отправка email на сервер."""
         data = {"email": email}
         return await self._make_request("POST", "users/email/", data, telegram_id)
 
-    async def send_code(self, code: str, telegram_id: str) -> Dict[str, Any]:
+    async def send_code(self, *, code: str, telegram_id: str) -> Dict[str, Any]:
         """Регистрация пользователя. Отправка code на сервер."""
         data = {"code": code}
         return await self._make_request("POST", "users/code/", data, telegram_id)

@@ -37,7 +37,7 @@ class RegistrationEmailService(BaseService):
 
         try:
             # Отправляем запрос на сервер
-            await self.api.send_email(email, telegram_id)
+            await self.api.send_email(email=email, telegram_id=telegram_id)
 
             # Сохраняем email и telegram_id в состоянии
             await state.update_data(email=email)
@@ -78,7 +78,7 @@ class RegistrationCodeService(BaseService):
 
         # Отправляем запрос на сервер
         try:
-            response_data = await self.api.send_code(code, telegram_id)
+            response_data = await self.api.send_code(code=code, telegram_id=telegram_id)
 
             await message.answer(
                 response_data.get(
