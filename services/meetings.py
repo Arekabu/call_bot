@@ -1,5 +1,5 @@
 import re
-from typing import Any, final
+from typing import final
 
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.context import FSMContext
@@ -13,12 +13,10 @@ from services.base import BaseService
 
 @final
 class MeetingsService(BaseService):
-    async def _get_telegram_id(self, **kwargs: Any) -> str:
-        callback: CallbackQuery = kwargs["callback"]
+    async def _get_telegram_id(self, callback: CallbackQuery) -> str:
         return str(callback.from_user.id)
 
-    async def _call_api(self, telegram_id: str, **kwargs: Any) -> None:
-        callback: CallbackQuery = kwargs["callback"]
+    async def _call_api(self, telegram_id: str, callback: CallbackQuery) -> None:
         chat_id = str(callback.message.chat.id)
 
         if chat_id == telegram_id:
@@ -136,14 +134,11 @@ class MeetingsService(BaseService):
 
 @final
 class MeetingsUpdateTimeStartService(BaseService):
-    async def _get_telegram_id(
-        self, *, callback: CallbackQuery, state: FSMContext
-    ) -> str:
-        # callback: CallbackQuery = kwargs["callback"]
+    async def _get_telegram_id(self, callback: CallbackQuery, state: FSMContext) -> str:
         return str(callback.from_user.id)
 
     async def _call_api(
-        self, *, telegram_id: str, callback: CallbackQuery, state: FSMContext
+        self, telegram_id: str, callback: CallbackQuery, state: FSMContext
     ) -> None:
         await callback.message.answer(
             "Введите желаемое время обновления в формате 00:00"
@@ -153,11 +148,11 @@ class MeetingsUpdateTimeStartService(BaseService):
 
 @final
 class MeetingsUpdateTimeSendTimeService(BaseService):
-    async def _get_telegram_id(self, *, message: Message, state: FSMContext) -> str:
+    async def _get_telegram_id(self, message: Message, state: FSMContext) -> str:
         return str(message.from_user.id)
 
     async def _call_api(
-        self, *, telegram_id: str, message: Message, state: FSMContext
+        self, telegram_id: str, message: Message, state: FSMContext
     ) -> None:
         """Отправка введённого time на сервер"""
         time = message.text.strip()
