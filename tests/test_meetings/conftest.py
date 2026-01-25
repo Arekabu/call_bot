@@ -7,10 +7,15 @@ async def mock_meetings_handler(request):
         {
             "meetings": [
                 {
-                    "title": "Test Meeting",
+                    "title": "Test Meeting 01",
                     "meeting_time": "10:00 - 11:00",
                     "url": "https://test.meet/123",
-                }
+                },
+                {
+                    "title": "Test Meeting 02",
+                    "meeting_time": "12:00 - 13:00",
+                    "url": "",
+                },
             ]
         }
     )

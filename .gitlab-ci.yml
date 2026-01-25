@@ -1,0 +1,74 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  IMAGE_TAG: $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  BASE_IMAGE_CACHE: $CI_REGISTRY_IMAGE/base_python-$CI_COMMIT_REF_NAME:cache
+  BASE_IMAGE: $CI_REGISTRY_IMAGE/base_python-$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+  BASE_IMAGE_PROD: $CI_REGISTRY_IMAGE/base_python-prod:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  BOT_IMAGE: $CI_REGISTRY_IMAGE/telegram_bot:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+
+build_base_python_image:
+  stage: build
+  image: docker:20.10.12
+  services:
+  - name: docker:20.10.12-dind
+    command: ["--tls=false"]
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker pull "$BASE_IMAGE_CACHE" || true
+    - docker build --network host --pull --cache-from "$BASE_IMAGE_CACHE" -f Dockerfile -t "$BASE_IMAGE" .
+    - docker tag "$BASE_IMAGE" "$BASE_IMAGE_CACHE"
+    - docker push "$BASE_IMAGE"
+    - docker push "$BASE_IMAGE_CACHE"
+  only:
+    - prod
+
+.deploy_helm: &deploy_helm
+  stage: deploy
+  image: alpine/helm:3.11.2
+  script:
+    - |
+      apk update && apk upgrade && apk add --no-cache curl bash gettext jq
+      curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+      chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+      kubectl config get-contexts
+      kubectl config use-context $KUBE_CONTEXT
+    - |
+      cat <<EOL >.helm/.env
+      # Django
+      DEBUG=$DEFINED_DEBUG
+      DJANGO_SECRET_KEY=$DEFINED_SECRET_KEY
+      #SECRET_KEY=$DEFINED_SECRET_KEY
+      ALLOWED_HOSTS=$DEFINED_ALLOWED_HOSTS
+      DJANGO_ALLOWED_HOSTS=$DEFINED_ALLOWED_HOSTS
+      # Telegram
+      BOT_TOKEN=$DEFINED_BOT_TOKEN
+      DJANGO_API_URL=http://app-call-calendar-backend-prod:8000/api
+      SYNC_INTERVAL_MINUTES=15
+      EOL
+    - export KUBE_NAMESPACE="${CI_PROJECT_NAMESPACE##*/}-${ENVIRONMENT}"
+    - echo $KUBE_NAMESPACE
+    - kubectl create namespace ${KUBE_NAMESPACE//_/-} --dry-run=client -o yaml | kubectl apply -f -
+    - kubectl delete secrets ${CI_PROJECT_NAME//_/-}-${ENVIRONMENT} -n ${KUBE_NAMESPACE//_/-} --ignore-not-found
+    - kubectl create secret generic ${CI_PROJECT_NAME//_/-}-${ENVIRONMENT} --from-env-file=.helm/.env -n ${KUBE_NAMESPACE//_/-}
+    #- kubectl patch secret "${CI_PROJECT_NAME//_/-}-${ENVIRONMENT}" -n "${KUBE_NAMESPACE//_/-}" --type=merge -p "{\"stringData\":{\"GOOGLE_CREDENTIALS_JSON\":$(jq -Rs . < \"$CI_GOOGLE_CREDENTIALS_JSON\")}}"
+    - echo "helm upgrade ${CI_PROJECT_NAME//_/-} .helm --atomic --debug --install --namespace=${KUBE_NAMESPACE//_/-} --set image=${build_image} --set stage=${ENVIRONMENT} --timeout 5m --wait --create-namespace -f .helm/values-${ENVIRONMENT}.yaml"
+    - helm upgrade ${CI_PROJECT_NAME//_/-} .helm --atomic --debug --install --namespace=${KUBE_NAMESPACE//_/-} --set image=${build_image} --set stage=${ENVIRONMENT} --timeout 5m --wait --create-namespace -f .helm/values-${ENVIRONMENT}.yaml
+
+deploy_prod:
+  <<: *deploy_helm
+  variables:
+    ENVIRONMENT: prod
+    KUBE_CONTEXT: ylab-internal/keycloak:ylab-internal-group-agent-prod
+    DEFINED_SECRET_KEY: $CI_PROD_SECRET_KEY
+    DEFINED_ALLOWED_HOSTS: "*"
+    DEFINED_BOT_TOKEN: $CI_PROD_BOT_TOKEN
+    build_image: $BASE_IMAGE
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'prod'

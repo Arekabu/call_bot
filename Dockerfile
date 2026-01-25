@@ -13,11 +13,12 @@ RUN uv sync --frozen --no-dev
 
 # Копируем модули
 COPY config/ ./config/
+COPY exceptions/ ./exceptions/
 COPY handlers/ ./handlers/
 COPY keyboards/ ./keyboards/
 COPY parser/ ./parser/
 COPY services/ ./services/
-COPY bot.py .env ./
+COPY bot.py ./
 
 # Настраиваем окружене
 ENV PATH="/app/.venv/bin:$PATH"

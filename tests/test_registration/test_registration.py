@@ -28,7 +28,7 @@ async def test_process_email(test_server_factory, mock_message):
     mock_message.text = "test@example.com"
     mock_state = AsyncMock(spec=FSMContext)
 
-    await client.execute(mock_message, mock_state)
+    await client(message=mock_message, state=mock_state)
 
     mock_message.answer.assert_called_once()
     text = mock_message.answer.call_args[0][0]
@@ -36,7 +36,7 @@ async def test_process_email(test_server_factory, mock_message):
 
     mock_message.answer.reset_mock()
 
-    await client_error.execute(mock_message, mock_state)
+    await client_error(message=mock_message, state=mock_state)
 
     mock_message.answer.assert_called_once()
     text = mock_message.answer.call_args[0][0]
@@ -69,7 +69,7 @@ async def test_process_code(test_server_factory, mock_message):
         "telegram_id": "123456",
     }
 
-    await client.execute(mock_message, mock_state)
+    await client(message=mock_message, state=mock_state)
     mock_message.answer.assert_called_once()
     text = mock_message.answer.call_args[0][0]
 
@@ -77,7 +77,7 @@ async def test_process_code(test_server_factory, mock_message):
 
     mock_message.answer.reset_mock()
 
-    await client_error.execute(mock_message, mock_state)
+    await client_error(message=mock_message, state=mock_state)
     mock_message.answer.assert_called_once()
     text = mock_message.answer.call_args[0][0]
 

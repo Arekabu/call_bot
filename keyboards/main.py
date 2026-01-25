@@ -5,7 +5,7 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
 )
 
-from keyboards.callback_data import MainKeyboardCallback
+from keyboards import MainKeyboardCallback
 
 
 def get_main_keyboard() -> ReplyKeyboardMarkup:
@@ -35,6 +35,38 @@ def get_main_inline_keyboard() -> InlineKeyboardMarkup:
                 InlineKeyboardButton(
                     text="❓ Помощь", callback_data=MainKeyboardCallback.HELP
                 ),
+            ],
+        ]
+    )
+
+
+def get_calls_inline_keyboard() -> InlineKeyboardMarkup:
+    """inline-клавиатура с кнопкой Мои созвоны"""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="📅 Обновить", callback_data=MainKeyboardCallback.MY_CALLS
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="🕐 Установить время",
+                    callback_data=MainKeyboardCallback.UPDATE_TIME,
+                )
+            ],
+        ]
+    )
+
+
+def get_calls_inline_keyboard_group() -> InlineKeyboardMarkup:
+    """inline-клавиатура с кнопкой Мои созвоны"""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="📅 Обновить", callback_data=MainKeyboardCallback.MY_CALLS
+                )
             ],
         ]
     )

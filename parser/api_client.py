@@ -1,11 +1,17 @@
 import logging
 from http import HTTPStatus
-from parser.exceptions import BaseServiceException, NetworkError, Server500
 from typing import Any, Dict
 
 import aiohttp
 
 from config import config
+from config.dto import (
+    MeetingsDTO,
+    RegistrationCodeDTO,
+    RegistrationEmailDTO,
+    UpdateTimeDTO,
+)
+from exceptions import BaseServiceException, NetworkError, Server500
 
 logger = logging.getLogger(__name__)
 
@@ -48,16 +54,30 @@ class DjangoAPIClient:
             logger.error(f"Network error: {e}")
             raise NetworkError(f"Network error: {str(e)}")
 
-    async def send_email(self, email: str, telegram_id: str) -> Dict[str, Any]:
+    async def send_email(self, email_data: RegistrationEmailDTO) -> Dict[str, Any]:
         """Регистрация пользователя. Отправка email на сервер."""
-        data = {"email": email}
-        return await self._make_request("POST", "users/email/", data, telegram_id)
+        data = {"email": email_data.email}
+        return await self._make_request(
+            "POST", "users/email/", data, email_data.telegram_id
+        )
 
-    async def send_code(self, code: str, telegram_id: str) -> Dict[str, Any]:
+    async def send_code(self, code_data: RegistrationCodeDTO) -> Dict[str, Any]:
         """Регистрация пользователя. Отправка code на сервер."""
-        data = {"code": code}
-        return await self._make_request("POST", "users/code/", data, telegram_id)
+        data = {"code": code_data.code}
+        return await self._make_request(
+            "POST", "users/code/", data, code_data.telegram_id
+        )
 
-    async def get_meetings(self, telegram_id: str) -> Dict[str, Any]:
+    async def get_meetings(self, meetings_data: MeetingsDTO) -> Dict[str, Any]:
         """Запрос созвонов. Запросить созвоны пользователя."""
-        return await self._make_request("GET", "meetings/", telegram_id=telegram_id)
+        data = {"chat_id": meetings_data.chat_id}
+        return await self._make_request(
+            "GET", "meetings/", data, telegram_id=meetings_data.telegram_id
+        )
+
+    async def send_time(self, time_data: UpdateTimeDTO) -> Dict[str, Any]:
+        """Отправка времени обновления данных о созвонах"""
+        data = {"time": time_data.time, "chat_id": time_data.chat_id}
+        return await self._make_request(
+            "POST", "users/set_time/", data, telegram_id=time_data.telegram_id
+        )
