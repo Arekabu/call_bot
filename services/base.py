@@ -17,5 +17,5 @@ class BaseService(ABC):
         pass
 
     @abstractmethod
-    async def _call_api(self, telegram_id: str, **kwargs: Any) -> None:
+    async def _call_api(self, **kwargs: Any) -> None:
         pass

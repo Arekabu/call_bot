@@ -1,8 +1,24 @@
-from dataclasses import dataclass
+from pydantic import BaseModel, ConfigDict, Field
 
 
-@dataclass(slots=True, frozen=True)
-class TimeUpdateDTO:
-    time: str
+class BaseDTO(BaseModel):
+    telegram_id: str = Field(exclude=True)
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+
+class RegistrationEmailDTO(BaseDTO):
+    email: str
+
+
+class RegistrationCodeDTO(BaseDTO):
+    code: str
+
+
+class MeetingsDTO(BaseDTO):
     chat_id: str
-    telegram_id: str
+
+
+class UpdateTimeDTO(BaseDTO):
+    chat_id: str
+    time: str

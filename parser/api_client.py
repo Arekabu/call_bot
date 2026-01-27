@@ -5,7 +5,12 @@ from typing import Any, Dict
 import aiohttp
 
 from config import config
-from config.dto import TimeUpdateDTO
+from config.dto import (
+    MeetingsDTO,
+    RegistrationCodeDTO,
+    RegistrationEmailDTO,
+    UpdateTimeDTO,
+)
 from exceptions import BaseServiceException, NetworkError, Server500
 
 logger = logging.getLogger(__name__)
@@ -49,26 +54,30 @@ class DjangoAPIClient:
             logger.error(f"Network error: {e}")
             raise NetworkError(f"Network error: {str(e)}")
 
-    async def send_email(self, email: str, telegram_id: str) -> Dict[str, Any]:
+    async def send_email(self, email_data: RegistrationEmailDTO) -> Dict[str, Any]:
         """Регистрация пользователя. Отправка email на сервер."""
-        data = {"email": email}
-        return await self._make_request("POST", "users/email/", data, telegram_id)
-
-    async def send_code(self, code: str, telegram_id: str) -> Dict[str, Any]:
-        """Регистрация пользователя. Отправка code на сервер."""
-        data = {"code": code}
-        return await self._make_request("POST", "users/code/", data, telegram_id)
-
-    async def get_meetings(self, *, chat_id: str, telegram_id: str) -> Dict[str, Any]:
-        """Запрос созвонов. Запросить созвоны пользователя."""
-        data = {"chat_id": chat_id}
+        data = email_data.model_dump()
         return await self._make_request(
-            "GET", "meetings/", data, telegram_id=telegram_id
+            "POST", "users/email/", data, email_data.telegram_id
         )
 
-    async def send_time(self, *, time_data: TimeUpdateDTO) -> Dict[str, Any]:
+    async def send_code(self, code_data: RegistrationCodeDTO) -> Dict[str, Any]:
+        """Регистрация пользователя. Отправка code на сервер."""
+        data = code_data.model_dump()
+        return await self._make_request(
+            "POST", "users/code/", data, code_data.telegram_id
+        )
+
+    async def get_meetings(self, meetings_data: MeetingsDTO) -> Dict[str, Any]:
+        """Запрос созвонов. Запросить созвоны пользователя."""
+        data = meetings_data.model_dump()
+        return await self._make_request(
+            "GET", "meetings/", data, telegram_id=meetings_data.telegram_id
+        )
+
+    async def send_time(self, time_data: UpdateTimeDTO) -> Dict[str, Any]:
         """Отправка времени обновления данных о созвонах"""
-        data = {"time": time_data.time, "chat_id": time_data.chat_id}
+        data = time_data.model_dump()
         return await self._make_request(
             "POST", "users/set_time/", data, telegram_id=time_data.telegram_id
         )
