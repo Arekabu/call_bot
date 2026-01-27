@@ -1,9 +1,10 @@
-from typing import Any, final
+from typing import final
 
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from config import RegistrationStates
+from config.dto import RegistrationCodeDTO, RegistrationEmailDTO
 from exceptions import BaseServiceException, Server500
 from services.base import BaseService
 
@@ -12,13 +13,12 @@ from services.base import BaseService
 class RegistrationStartService(BaseService):
     """Сервис начала регистрации"""
 
-    async def _get_telegram_id(self, **kwargs: Any) -> str:
-        message: Message = kwargs["message"]
+    async def _get_telegram_id(self, message: Message, state: FSMContext) -> str:
         return str(message.from_user.id)
 
-    async def _call_api(self, telegram_id: str, **kwargs: Any) -> None:
-        message: Message = kwargs["message"]
-        state: FSMContext = kwargs["state"]
+    async def _call_api(
+        self, telegram_id: str, message: Message, state: FSMContext
+    ) -> None:
         await message.answer("Введите адрес электронной почты пользователя.")
         await state.set_state(RegistrationStates.waiting_for_email)
 
@@ -27,19 +27,20 @@ class RegistrationStartService(BaseService):
 class RegistrationEmailService(BaseService):
     """Сервис отправки email"""
 
-    async def _get_telegram_id(self, **kwargs: Any) -> str:
-        message: Message = kwargs["message"]
+    async def _get_telegram_id(self, message: Message, state: FSMContext) -> str:
         return str(message.from_user.id)
 
-    async def _call_api(self, telegram_id: str, **kwargs: Any) -> None:
+    async def _call_api(
+        self, telegram_id: str, message: Message, state: FSMContext
+    ) -> None:
         """Отправка введённого email на сервер"""
-        message: Message = kwargs["message"]
-        state: FSMContext = kwargs["state"]
         email = message.text.strip()
+
+        email_data = RegistrationEmailDTO(email=email, telegram_id=telegram_id)
 
         try:
             # Отправляем запрос на сервер
-            await self.api.send_email(email, telegram_id)
+            await self.api.send_email(email_data)
 
             # Сохраняем email и telegram_id в состоянии
             await state.update_data(email=email)
@@ -59,15 +60,13 @@ class RegistrationEmailService(BaseService):
 class RegistrationCodeService(BaseService):
     """Сервис отправки кода"""
 
-    async def _get_telegram_id(self, **kwargs: Any) -> str:
-        message: Message = kwargs["message"]
+    async def _get_telegram_id(self, message: Message, state: FSMContext) -> str:
         return str(message.from_user.id)
 
-    async def _call_api(self, telegram_id: str, **kwargs: Any) -> None:
+    async def _call_api(
+        self, telegram_id: str, message: Message, state: FSMContext
+    ) -> None:
         """Отправка введенного кода на сервер"""
-
-        message: Message = kwargs["message"]
-        state: FSMContext = kwargs["state"]
         code = message.text.strip()
 
         user_data = await state.get_data()
@@ -80,9 +79,11 @@ class RegistrationCodeService(BaseService):
             await state.clear()
             return
 
+        code_data = RegistrationCodeDTO(code=code, telegram_id=telegram_id)
+
         # Отправляем запрос на сервер
         try:
-            response_data = await self.api.send_code(code, telegram_id)
+            response_data = await self.api.send_code(code_data)
 
             await message.answer(
                 response_data.get(
