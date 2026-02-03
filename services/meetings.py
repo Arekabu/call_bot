@@ -94,7 +94,12 @@ class MeetingsService(BaseService):
 
         text = "📅 <b>Cозвоны на сегодня:</b>\n\n"
 
-        for n, user_data in enumerate(meetings, 1):
+        users_with_events = []
+        for user_data in meetings:
+            if user_data.get("events"):
+                users_with_events.append(user_data)
+
+        for n, user_data in enumerate(users_with_events, 1):
             username = user_data["username"]
             events = user_data.get("events", [])
 
@@ -117,7 +122,7 @@ class MeetingsService(BaseService):
                 else:
                     text += "   🔗 Ссылка не предоставлена.\n"
 
-            if n != len(meetings):
+            if n != len(users_with_events):
                 text += "─" * 19 + "\n\n"
 
         return text

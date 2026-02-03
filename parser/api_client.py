@@ -77,7 +77,7 @@ class DjangoAPIClient:
 
     async def send_time(self, time_data: UpdateTimeDTO) -> Dict[str, Any]:
         """Отправка времени обновления данных о созвонах"""
-        data = {"time": time_data.time, "chat_id": time_data.chat_id}
+        data = time_data.model_dump()
         return await self._make_request(
             "POST", "users/set_time/", data, telegram_id=time_data.telegram_id
         )
