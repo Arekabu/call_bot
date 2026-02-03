@@ -56,21 +56,21 @@ class DjangoAPIClient:
 
     async def send_email(self, email_data: RegistrationEmailDTO) -> Dict[str, Any]:
         """Регистрация пользователя. Отправка email на сервер."""
-        data = email_data.model_dump()
+        data = {"email": email_data.email}
         return await self._make_request(
             "POST", "users/email/", data, email_data.telegram_id
         )
 
     async def send_code(self, code_data: RegistrationCodeDTO) -> Dict[str, Any]:
         """Регистрация пользователя. Отправка code на сервер."""
-        data = code_data.model_dump()
+        data = {"code": code_data.code}
         return await self._make_request(
             "POST", "users/code/", data, code_data.telegram_id
         )
 
     async def get_meetings(self, meetings_data: MeetingsDTO) -> Dict[str, Any]:
         """Запрос созвонов. Запросить созвоны пользователя."""
-        data = meetings_data.model_dump()
+        data = {"chat_id": meetings_data.chat_id}
         return await self._make_request(
             "GET", "meetings/", data, telegram_id=meetings_data.telegram_id
         )

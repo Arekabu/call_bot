@@ -1,24 +1,27 @@
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class BaseDTO(BaseModel):
-    telegram_id: str = Field(exclude=True)
+@dataclass(kw_only=True, slots=True, frozen=True)
+class BaseDTO:
+    telegram_id: str
 
-    model_config = ConfigDict(frozen=True, extra="forbid")
 
-
+@dataclass(kw_only=True, slots=True, frozen=True)
 class RegistrationEmailDTO(BaseDTO):
     email: str
 
 
+@dataclass(kw_only=True, slots=True, frozen=True)
 class RegistrationCodeDTO(BaseDTO):
     code: str
 
 
+@dataclass(kw_only=True, slots=True, frozen=True)
 class MeetingsDTO(BaseDTO):
     chat_id: str
 
 
+@dataclass(kw_only=True, slots=True, frozen=True)
 class UpdateTimeDTO(BaseDTO):
     chat_id: str
     time: str
