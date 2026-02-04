@@ -49,8 +49,6 @@ build_base_python_image:
       DJANGO_ALLOWED_HOSTS=$DEFINED_ALLOWED_HOSTS
       # Telegram
       BOT_TOKEN=$DEFINED_BOT_TOKEN
-      CHAT_ID=$DEFINED_CHAT_ID
-      CALENDAR_KEY=$DEFINED_CALENDAR_KEY
       DJANGO_API_URL=http://app-call-calendar-backend-prod:8000/api
       SYNC_INTERVAL_MINUTES=15
       EOL
@@ -71,8 +69,6 @@ deploy_prod:
     DEFINED_SECRET_KEY: $CI_PROD_SECRET_KEY
     DEFINED_ALLOWED_HOSTS: "*"
     DEFINED_BOT_TOKEN: $CI_PROD_BOT_TOKEN
-    DEFINED_CHAT_ID: $CI_CHAT_ID
-    DEFINED_CALENDAR_KEY: $CI_CALENDAR_KEY
     build_image: $BASE_IMAGE
   rules:
     - if: $CI_COMMIT_BRANCH == 'prod'

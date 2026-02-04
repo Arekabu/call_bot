@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field
+from dataclasses import dataclass
 
 
 @dataclass(kw_only=True, slots=True, frozen=True)
